@@ -25,5 +25,16 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields=('username', 'first_name', 'last_name','email','article_set','likes_articles','dislikes_articles','likes_comments','dislikes_comments',)
+        fields=(
+            'username', 'first_name', 'last_name',
+            'email','phone_number','address','birth_date','major_bank',
+            'article_set',
+            'likes_articles','dislikes_articles','likes_comments','dislikes_comments',
+                )
         # fields='__all__'
+
+class UserChangeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model =User
+        fields=('email','phone_number','address','birth_date','major_bank',)
+        read_only_fields = ('username', 'first_name', 'last_name','article_set','likes_articles','dislikes_articles','likes_comments','dislikes_comments',)

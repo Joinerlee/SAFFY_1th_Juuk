@@ -21,5 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('banking/articles/', include('articles.urls')),
     # path('accounts', include('accounts.urls')), -> 로그인을 위한 URL은 새로 만들자
-    path('profile/', include('accounts.urls'))
+    path('profile/', include('accounts.urls')),
+    path('exchange/', include('exchange.urls'))
 ]
