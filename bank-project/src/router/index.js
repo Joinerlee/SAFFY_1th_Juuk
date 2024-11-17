@@ -48,10 +48,15 @@ const router = createRouter({
       component: () => import('../views/NearbyBanksView.vue'),
     },
     {
-      // 커뮤니티 페이지
-      path: '/community',
-      name: 'community',
-      component: () => import('../views/CommunityView.vue'),
+      path: '/articles',
+      name: 'articles',
+      component: () => import('../views/ArticleView.vue'),
+    },
+    {
+      path: '/articles/:articleId',
+      name: 'article-detail',
+      component: () => import('../views/ArticleDetailView.vue'),
+      props: true,
     },
     {
       // 금융 상품 추천 페이지

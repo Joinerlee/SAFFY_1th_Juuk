@@ -8,7 +8,7 @@
                 <router-link to="/" class="nav-link">홈</router-link>
                 <router-link to="/exchange" class="nav-link">환율 계산</router-link>
                 <router-link to="/nearby-banks" class="nav-link">주변 은행</router-link>
-                <router-link to="/community" class="nav-link">커뮤니티</router-link>
+                <router-link to="/articles" class="nav-link">커뮤니티</router-link>
                 <router-link to="/product-recommendation" class="nav-link">금융 상품 추천</router-link>
             </div>
         </div>
