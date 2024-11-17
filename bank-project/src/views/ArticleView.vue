@@ -1,29 +1,71 @@
-<!-- views/ArticleView -->
+<!-- views/ArticleView.vue -->
 <template>
-  <div>
+  <div class="article-container">
     <h1>게시글 목록</h1>
-    <ul>
-      <li v-for="article in articles" :key="article.id">
-        <router-link :to="`/articles/${article.id}`">{{ article.title }}</router-link>
+    
+    <!-- 로딩 상태 표시 -->
+    <div v-if="loading" class="loading">
+      데이터를 불러오는 중...
+    </div>
+
+    <!-- 에러 메시지 표시 -->
+    <div v-if="error" class="error-message">
+      {{ error }}
+    </div>
+
+    <!-- 게시글 목록 -->
+    <ul v-if="!loading && !error" class="article-list">
+      <li v-for="article in articles" :key="article.id" class="article-item">
+        <router-link :to="`/articles/${article.id}`">
+          {{ article.title }}
+        </router-link>
       </li>
     </ul>
-    <button @click="createArticle">새 게시글 작성</button>
 
-    <!-- 게시글 생성 모달 (선택 사항) -->
+    <!-- 게시글 작성 버튼 -->
+    <button @click="createArticle" class="create-button">
+      새 게시글 작성
+    </button>
+
+    <!-- 게시글 작성 모달 -->
     <div v-if="showModal" class="modal">
       <div class="modal-content">
-        <span class="close" @click="showModal = false">&times;</span>
-        <h2>새 게시글 작성</h2>
+        <div class="modal-header">
+          <h2>새 게시글 작성</h2>
+          <button class="close-button" @click="closeModal">&times;</button>
+        </div>
+        
         <form @submit.prevent="submitArticle">
-          <div>
+          <div class="form-group">
             <label for="title">제목</label>
-            <input id="title" v-model="newArticle.title" type="text" required />
+            <input 
+              id="title"
+              v-model="newArticle.title"
+              type="text"
+              required
+              placeholder="제목을 입력하세요"
+            >
           </div>
-          <div>
+          
+          <div class="form-group">
             <label for="description">내용</label>
-            <textarea id="description" v-model="newArticle.description" required></textarea>
+            <textarea
+              id="description"
+              v-model="newArticle.description"
+              required
+              placeholder="내용을 입력하세요"
+              rows="5"
+            ></textarea>
           </div>
-          <button type="submit">작성</button>
+
+          <div class="button-group">
+            <button type="button" @click="closeModal" class="cancel-button">
+              취소
+            </button>
+            <button type="submit" :disabled="loading" class="submit-button">
+              {{ loading ? '작성 중...' : '작성하기' }}
+            </button>
+          </div>
         </form>
       </div>
     </div>
@@ -31,9 +73,11 @@
 </template>
 
 <script>
-import articlesAPI from '../apis/articlesAPI';
+import articlesAPI from '../apis/articlesAPI'
 
 export default {
+  name: 'ArticleView',
+  
   data() {
     return {
       articles: [],
@@ -41,37 +85,133 @@ export default {
       newArticle: {
         title: '',
         description: ''
-      }
-    };
-  },
-  async created() {
-    try {
-      this.articles = await articlesAPI.getArticles();
-    } catch (error) {
-      console.error('게시글 불러오기 실패:', error);
+      },
+      loading: false,
+      error: null
     }
   },
+
+  async created() {
+    await this.fetchArticles()
+  },
+
   methods: {
-    createArticle() {
-      this.showModal = true;
-    },
-    async submitArticle() {
+    async fetchArticles() {
       try {
-        await articlesAPI.createArticle(this.newArticle);
-        this.showModal = false;
-        this.newArticle.title = '';
-        this.newArticle.description = '';
-        this.articles = await articlesAPI.getArticles(); // 게시글 목록 업데이트
+        this.loading = true
+        this.error = null
+        this.articles = await articlesAPI.getArticles()
       } catch (error) {
-        console.error('게시글 작성 실패:', error);
+        this.error = '게시글을 불러오는데 실패했습니다'
+        console.error('게시글 로딩 에러:', error)
+      } finally {
+        this.loading = false
+      }
+    },
+
+    createArticle() {
+      this.showModal = true
+    },
+
+    closeModal() {
+      this.showModal = false
+      this.resetForm()
+    },
+
+    resetForm() {
+      this.newArticle = {
+        title: '',
+        description: ''
+      }
+    },
+
+    async submitArticle() {
+      if (!this.newArticle.title || !this.newArticle.description) {
+        this.error = '모든 필드를 입력해주세요'
+        return
+      }
+
+      try {
+        this.loading = true
+        this.error = null
+        await articlesAPI.createArticle(this.newArticle)
+        await this.fetchArticles()
+        this.closeModal()
+      } catch (error) {
+        this.error = '게시글 작성에 실패했습니다'
+        console.error('게시글 작성 에러:', error)
+      } finally {
+        this.loading = false
       }
     }
   }
-};
+}
 </script>
 
 <style scoped>
-/* 모달 스타일 */
+.article-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h1 {
+  color: #333;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.loading {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+}
+
+.error-message {
+  background-color: #fff3f3;
+  color: #dc3545;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.article-list {
+  list-style: none;
+  padding: 0;
+}
+
+.article-item {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.article-item:hover {
+  background-color: #f8f9fa;
+}
+
+.article-item a {
+  text-decoration: none;
+  color: #333;
+  display: block;
+}
+
+.create-button {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  background-color: #2D60FF;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.create-button:hover {
+  background-color: #1a45d1;
+}
+
 .modal {
   position: fixed;
   top: 0;
@@ -82,47 +222,103 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
 }
 
 .modal-content {
   background-color: white;
-  padding: 20px;
+  padding: 25px;
   border-radius: 8px;
-  width: 400px;
+  width: 500px;
+  max-width: 90%;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.close {
-  float: right;
-  font-size: 1.5em;
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 24px;
   cursor: pointer;
+  color: #666;
 }
 
-form div {
-  margin-bottom: 15px;
+.form-group {
+  margin-bottom: 20px;
 }
 
-label {
+.form-group label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #333;
 }
 
-input, textarea {
+.form-group input,
+.form-group textarea {
   width: 100%;
-  padding: 8px;
+  padding: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
+  font-size: 14px;
 }
 
-button {
-  padding: 10px 15px;
-  background-color: #2D60FF;
-  color: white;
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #2D60FF;
+  box-shadow: 0 0 0 2px rgba(45, 96, 255, 0.1);
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.button-group button {
+  padding: 10px 20px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 14px;
 }
 
-button:hover {
-  background-color: #1a45d1;
+.cancel-button {
+  background-color: #f8f9fa;
+  color: #333;
+}
+
+.submit-button {
+  background-color: #2D60FF;
+  color: white;
+}
+
+.submit-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+  .modal-content {
+    width: 95%;
+    margin: 10px;
+    padding: 15px;
+  }
+
+  .button-group {
+    flex-direction: column;
+  }
+
+  .button-group button {
+    width: 100%;
+  }
 }
 </style>
