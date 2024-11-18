@@ -22,6 +22,7 @@ urlpatterns = [
     path('banking/articles/', include('articles.urls')),
     # path('accounts', include('accounts.urls')), -> 로그인을 위한 URL은 새로 만들자
     path('profile/', include('accounts.urls')),
+`
     path('exchange/', include('exchange.urls')),
     
     path('products/', include('products.urls')),
@@ -30,4 +31,5 @@ urlpatterns = [
     path('accounts/', include('dj_rest_auth.urls')),
     path('accounts/signup/', include('dj_rest_auth.registration.urls')),
     path('accounts/signout/', include('accounts.urls'))
+
 ]

@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'exchange',
     'rest_framework',
     'corsheaders',
+
     'rest_framework.authtoken',
     'django.contrib.sites',
     'allauth',
@@ -51,6 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+
 
 SITE_ID = 1
 
@@ -76,8 +78,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
 ]
+
 CORS_ORIGIN_WHITELIST = (
-    "http://localhost:8080",
+    # 본인아이피/5173
+    "http://localhost:5173",
 )
 
 ROOT_URLCONF = 'bank_pjt.urls'
