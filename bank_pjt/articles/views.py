@@ -7,10 +7,15 @@ from rest_framework.decorators import api_view
 from django.shortcuts import get_list_or_404, get_object_or_404
 from rest_framework import status
 
+
+# 회원가입을 위해
+from rest_framework.decorators import authentication_classes
+from rest_framework.authentication import TokenAuthentication, BasicAuthentication=
 # Create your views here.
 
 #  전체 게시물 조회 및 게시물 생성
 @api_view(['GET', 'POST'])
+@authentication_classes([TokenAuthentication, BasicAuthentication])
 def articles(request):
     if request.method =='GET':
         # get_list_obect 써야되나
@@ -28,6 +33,7 @@ def articles(request):
 # 단일 게시물 조회, 수정, 삭제
 # 단딜 게시물 조회 시 댓글 목록, 좋아요 수 도 함께 JSon으로 보내줌
 @api_view(['GET','PUT','DELETE'])
+@authentication_classes([TokenAuthentication, BasicAuthentication])
 def article_detail(request, article_pk):
     article = get_object_or_404(Article, pk=article_pk)
     if request.method =='GET':
