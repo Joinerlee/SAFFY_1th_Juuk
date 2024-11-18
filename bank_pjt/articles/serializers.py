@@ -25,7 +25,7 @@ class ArticleCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
         # 필드 순서 조정하기
-        fields = ['id', 'title', 'description', 'created_at', 'iamge', 'author', 'liked_users', 'liked_count','disliked_users', 'disliked_count','comment_set']
+        fields = ['id', 'title', 'description', 'created_at', 'image', 'author', 'liked_users', 'liked_count','disliked_users', 'disliked_count','comment_set']
         read_only_fields=('author','liked_users','disliked_users',)
 
 

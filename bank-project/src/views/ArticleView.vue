@@ -58,6 +58,15 @@
             ></textarea>
           </div>
 
+          <div class="form-group">
+            <label for="image">이미지 업로드</label>
+            <input 
+              id="image"
+              type="file"
+              @change="onFileChange"
+            />
+          </div>
+
           <div class="button-group">
             <button type="button" @click="closeModal" class="cancel-button">
               취소
@@ -84,7 +93,8 @@ export default {
       showModal: false,
       newArticle: {
         title: '',
-        description: ''
+        description: '',
+        image: null
       },
       loading: false,
       error: null
@@ -121,8 +131,14 @@ export default {
     resetForm() {
       this.newArticle = {
         title: '',
-        description: ''
+        description: '',
+        image: null
       }
+    },
+
+    onFileChange(event) {
+      const file = event.target.files[0]
+      this.newArticle.image = file
     },
 
     async submitArticle() {
@@ -131,10 +147,17 @@ export default {
         return
       }
 
+      const formData = new FormData()
+      formData.append('title', this.newArticle.title)
+      formData.append('description', this.newArticle.description)
+      if (this.newArticle.image) {
+        formData.append('iamge', this.newArticle.image)
+      }
+
       try {
         this.loading = true
         this.error = null
-        await articlesAPI.createArticle(this.newArticle)
+        await articlesAPI.createArticle(formData)
         await this.fetchArticles()
         this.closeModal()
       } catch (error) {
