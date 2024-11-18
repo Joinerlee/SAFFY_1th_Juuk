@@ -7,6 +7,8 @@
 </template>
 
 <script>
+import articlesAPI from '../apis/articlesAPI'
+
 export default {
   name: 'ArticleDetailView',
   props: {
@@ -16,15 +18,31 @@ export default {
     }
   },
   mounted() {
-    // 예: articleId를 사용하여 API에서 게시글 데이터 가져오기
-    // this.fetchArticle(this.articleId)
+    this.fetchArticle(this.articleId)
+  },
+  data() {
+    return {
+      article: null,
+      loading: false,
+      error: null
+    }
   },
   methods: {
-    fetchArticle(id) {
-      // articlesAPI.getArticle(id).then(data => {
-      //   // 데이터 처리
-      // })
+    async fetchArticle(id) {
+      try {
+        this.loading = true
+        this.article = await articlesAPI.getArticle(id)
+      } catch (error) {
+        this.error = '게시글을 불러오는 데 실패했습니다.'
+        console.error('게시글 로딩 에러:', error)
+      } finally {
+        this.loading = false
+      }
     }
   }
 }
 </script>
+
+<style scoped>
+/* 스타일 추가 */
+</style>
