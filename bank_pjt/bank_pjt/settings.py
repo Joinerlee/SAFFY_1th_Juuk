@@ -31,41 +31,24 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'products',
     'articles',
     'accounts',
     'exchange',
+    'products',
     'rest_framework',
-    'corsheaders',
-
     'rest_framework.authtoken',
-    'django.contrib.sites',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'dj_rest_auth.registration',
     'dj_rest_auth',
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
 ]
-
-
-SITE_ID = 1
-
-REST_FRAMEWORK = {
-    # Authentication
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-    ],
-    # permission
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
-    ],
-}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -78,7 +61,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
 ]
-
 CORS_ORIGIN_WHITELIST = (
     # 본인아이피/5173
     "http://localhost:5173",
@@ -103,7 +85,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'bank_pjt.wsgi.application'
-
 
 
 # Database
