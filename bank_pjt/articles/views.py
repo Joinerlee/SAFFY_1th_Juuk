@@ -10,7 +10,7 @@ from rest_framework import status
 
 # 회원가입을 위해
 from rest_framework.decorators import authentication_classes
-from rest_framework.authentication import TokenAuthentication, BasicAuthentication=
+from rest_framework.authentication import TokenAuthentication, BasicAuthentication
 # Create your views here.
 
 #  전체 게시물 조회 및 게시물 생성

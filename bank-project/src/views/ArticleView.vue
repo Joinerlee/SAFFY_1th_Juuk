@@ -3,31 +3,27 @@
   <div class="article-container">
     <h1>게시글 목록</h1>
     
-    <!-- 로딩 상태 표시 -->
     <div v-if="loading" class="loading">
       데이터를 불러오는 중...
     </div>
 
-    <!-- 에러 메시지 표시 -->
     <div v-if="error" class="error-message">
       {{ error }}
     </div>
 
-    <!-- 게시글 목록 -->
-    <ul v-if="!loading && !error" class="article-list">
-      <li v-for="article in articles" :key="article.id" class="article-item">
-        <router-link :to="`/articles/${article.id}`">
-          {{ article.title }}
+    <div v-if="!loading && !error" class="article-list">
+      <div v-for="article in articles" :key="article.id" class="article-card">
+        <router-link :to="`/articles/${article.id}`" class="article-link">
+          <h2 class="article-title">{{ article.title }}</h2>
+          <p class="article-date">등록일: {{ formatDate(article.created_at) }}</p>
         </router-link>
-      </li>
-    </ul>
+      </div>
+    </div>
 
-    <!-- 게시글 작성 버튼 -->
     <button @click="createArticle" class="create-button">
       새 게시글 작성
     </button>
 
-    <!-- 게시글 작성 모달 -->
     <div v-if="showModal" class="modal">
       <div class="modal-content">
         <div class="modal-header">
@@ -83,6 +79,7 @@
 
 <script>
 import articlesAPI from '../apis/articlesAPI'
+import { format } from 'date-fns'
 
 export default {
   name: 'ArticleView',
@@ -166,6 +163,10 @@ export default {
       } finally {
         this.loading = false
       }
+    },
+
+    formatDate(date) {
+      return format(new Date(date), 'yyyy-MM-dd HH:mm')
     }
   }
 }
@@ -200,23 +201,37 @@ h1 {
 }
 
 .article-list {
-  list-style: none;
-  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
-.article-item {
+.article-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
   padding: 15px;
-  border-bottom: 1px solid #eee;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
 }
 
-.article-item:hover {
-  background-color: #f8f9fa;
+.article-card:hover {
+  transform: scale(1.02);
 }
 
-.article-item a {
+.article-link {
   text-decoration: none;
   color: #333;
-  display: block;
+}
+
+.article-title {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.article-date {
+  color: #888;
+  font-size: 0.9rem;
 }
 
 .create-button {
