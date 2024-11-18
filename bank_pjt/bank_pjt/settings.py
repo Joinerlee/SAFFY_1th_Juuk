@@ -55,7 +55,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 CORS_ORIGIN_WHITELIST = (
-    "http://localhost:8080",
+    # 본인아이피/5173
+    "http://localhost:5173",
 )
 
 ROOT_URLCONF = 'bank_pjt.urls'
