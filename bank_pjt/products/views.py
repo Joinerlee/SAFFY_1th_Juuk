@@ -184,7 +184,7 @@ def savings(request):
     return Response(serializers.data)
 
 
-# 정기 예금 상세 조회
+# 정기 예금 상세 조회asdf
 @api_view(["GET"])
 def savings_detail(request,fin_prdt_cd):
     deposit = Savings.objects.get(fin_prdt_cd=fin_prdt_cd)
